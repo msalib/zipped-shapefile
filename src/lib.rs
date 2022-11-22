@@ -4,7 +4,7 @@ use std::{
     path::Path,
 };
 
-use shapefile::reader::ShapeReader;
+pub use shapefile::{dbase::FieldValue, reader::ShapeRecordIterator, Reader, Shape, ShapeReader};
 use thiserror::Error;
 use zip::ZipArchive;
 
@@ -35,6 +35,9 @@ pub enum Error {
 
     #[error("zip member size larger than `usize`")]
     MemberSizeTooLarge(u64),
+
+    #[error("No .dfb file found in zipfile")]
+    NoDbfFound,
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -143,6 +146,15 @@ where
             Some(dbf) => Ok(Some(dbase::Reader::new(self.read_member(&dbf)?)?)),
             None => Ok(None),
         }
+    }
+
+    pub fn reader(&mut self) -> Result<Reader<Cursor<Vec<u8>>>> {
+        let dbf = self
+            .dbf_reader()
+            .transpose()
+            .unwrap_or(Err(Error::NoDbfFound))?;
+        let shp = self.shape_reader()?;
+        Ok(Reader::new(shp, dbf))
     }
 
     pub fn types(&mut self) -> Result<Option<Vec<(String, String)>>> {

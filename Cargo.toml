@@ -14,7 +14,7 @@ categories = []
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-dbase = "0.3.0"
-shapefile = "0.3.0"
+dbase = "0.2.0"  # this has to match shapefile's definition
+shapefile = {version = "0.3.0", features = ["geo-types"]}
 thiserror = "1.0.32"
 zip = "0.6.2"
