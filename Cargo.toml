@@ -17,4 +17,4 @@ categories = []
 dbase = "0.2.0"  # this has to match shapefile's definition
 shapefile = {version = "0.3.0", features = ["geo-types"]}
 thiserror = "1.0.32"
-zip = "0.6.2"
+zip = {version = "0.6.2", default-features = false, features = ["deflate"]}
